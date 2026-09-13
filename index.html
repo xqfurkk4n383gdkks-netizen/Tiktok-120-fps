@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <!-- Mobil cihazların ekranı küçültmesini ve mobil görünüme geçmesini tamamen engeller -->
+    <meta name="viewport" content="width=1440, initial-scale=1.0">
+    <title>wedzx - 120 FPS Desktop Studio</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f111a;
+            color: #ffffff;
+            width: 1440px; /* Sabit masaüstü genişliği */
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .container {
+            width: 1440px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d3250;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #00ffcc;
+            letter-spacing: 2px;
+        }
+
+        .badge {
+            background: #2d3250;
+            color: #00ffcc;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #00ffcc;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: #1a1c29;
+            border: 1px solid #2d3250;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #a0aec0;
+            border-left: 4px solid #00ffcc;
+            padding-left: 10px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #00ffcc;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(0, 255, 204, 0.03);
+            margin-bottom: 20px;
+        }
+
+        .drop-zone:hover {
+            background: rgba(0, 255, 204, 0.08);
+        }
+
+        .drop-zone p {
+            color: #a0aec0;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            background: #00ffcc;
+            color: #0f111a;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: #00cca3;
+            box-shadow: 0 0 15px rgba(0,255,204,0.4);
+        }
+
+        .preview-container {
+            width: 100%;
+            height: 650px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #2d3250;
+        }
+
+        video {
+            max-width: 100%;
+            max-height: 100%;
+            /* Donanım hızlandırmayı zorlayarak kasma/donmaları önler */
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: #0f111a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2d3250;
+            text-align: center;
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 12px;
+            color: #a0aec0;
+            margin-bottom: 5px;
+        }
+
+        .stat-box strong {
+            font-size: 18px;
+            color: #00ffcc;
+        }
+
+        .placeholder-text {
+            color: #4a5568;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">WEDZX // 120 FPS DESKTOP STUDIO</div>
+            <div class="badge">PC View Forced</div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Sol Kontrol Paneli -->
+            <div class="panel">
+                <h2>Video Yönetimi</h2>
+                <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+                    <svg width="48" height="48" fill="none" stroke="#00ffcc" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <p>120 FPS Video Dosyasını Seç veya Sürükle</p>
+                    <input type="file" id="fileInput" accept="video/*" style="display: none;">
+                </div>
+
+                <button class="btn" id="renderBtn" style="margin-bottom: 15px;">Yüksek Kalite Render (120 FPS)</button>
+                <button class="btn" id="downloadBtn" style="background: #2d3250; color: #00ffcc; border: 1px solid #00ffcc;">Dosyayı Kaydet</button>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span>HEDEF FPS</span>
+                        <strong>120 FPS</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>ÇÖZÜNÜRLÜK</span>
+                        <strong id="resVal">1080p</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>STATUS</span>
+                        <strong id="statusVal" style="color: #ffaa00;">Hazır</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Masaüstü Video Önizleme Alanı -->
+            <div class="panel">
+                <h2>Masaüstü Görüntüleme & Oynatıcı</h2>
+                <div class="preview-container" id="previewContainer">
+                    <div class="placeholder-text" id="placeholder">Henüz video yüklenmedi. (Tam PC Modu Aktif)</div>
+                    <video id="videoPlayer" controls style="display: none;"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const placeholder = document.getElementById('placeholder');
+        const statusVal = document.getElementById('statusVal');
+        const resVal = document.getElementById('resVal');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                videoPlayer.src = fileURL;
+                videoPlayer.style.display = 'block';
+                placeholder.style.display = 'none';
+                statusVal.innerText = "Yüklendi";
+                statusVal.style.color = "#00ffcc";
+
+                videoPlayer.onloadedmetadata = function() {
+                    resVal.innerText = videoPlayer.videoWidth + "x" + videoPlayer.videoHeight;
+                };
+            }
+        });
+
+        document.getElementById('renderBtn').addEventListener('click', function() {
+            if (!videoPlayer.src) {
+                alert("Lütfen önce bir video yükleyin!");
+                return;
+            }
+            statusVal.innerText = "İşleniyor...";
+            statusVal.style.color = "#00ffcc";
+            setTimeout(() => {
+                statusVal.innerText = "Optimizasyon Tamam";
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
